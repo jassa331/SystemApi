@@ -34,14 +34,14 @@ namespace SystemApi.Controllers
             }
         }
         [HttpPost]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(loginDto dto)
         {
+            if (dto == null)
+                return BadRequest("Please enter valid credentials");
+
             try
             {
-                if (dto == null)
-                {
-                    return BadRequest("please enter valid Candenstials ");
-                }
                 var token = await _authe.LoginAsync(dto);
                 return Ok(new { Token = token });
             }
@@ -49,11 +49,12 @@ namespace SystemApi.Controllers
             {
                 return Unauthorized(ex.Message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest("something went wrong ");
+                return StatusCode(500, "Internal server error");
             }
         }
+
     }
 }
     
